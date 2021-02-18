@@ -7,7 +7,9 @@ from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
-from rareapi.models import Post, Author, Category, User, PostTag
+from rest_framework.authtoken.models import Token
+from rareapi.models import Post, Category
+
 
 
 class Posts(ViewSet):
@@ -18,7 +20,6 @@ class Posts(ViewSet):
         Returns:
             Response -- JSON serialized post instance
         """
-        user = User.objects.get(user=request.auth.user)
 
         post = Post()
         post.title = request.data["title"]
@@ -27,9 +28,8 @@ class Posts(ViewSet):
         post.image_url = request.data["image_url"]
         post.approved = request.data["approved"]
         post.deleted = request.data["deleted"]
-
-        author = Author.objects.get(pk=request.data["author_id"])
-        post.author = author
+        token = Token.objects.get(user = request.auth.user)
+        post.author_id = token
 
         category = Category.objects.get(pk=request.data["category_id"])
         post.category = category
@@ -60,8 +60,6 @@ class Posts(ViewSet):
         Returns:
             Response -- Empty body with 204 status code
         """
-        user = User.objects.get(user=request.auth.user)
-
         post = Post()
         post.title = request.data["title"]
         post.content = request.data["content"]
@@ -69,9 +67,8 @@ class Posts(ViewSet):
         post.image_url = request.data["image_url"]
         post.approved = request.data["approved"]
         post.deleted = request.data["deleted"]
-
-        author = Author.objects.get(pk=request.data["author_id"])
-        post.author = author
+        token = Token.objects.get(user = request.auth.user)
+        post.author_id = token
 
         category = Category.objects.get(pk=request.data["category_id"])
         post.category = category
@@ -104,43 +101,16 @@ class Posts(ViewSet):
             Response -- JSON serialized list of posts
         """
         # Get the current authenticated user
-        user = User.objects.get(user=request.auth.user)
         posts = Post.objects.all()
 
-        # Set the `joined` property on every post
-        for post in posts:
-            post.joined = None
-
-            try:
-                PostTag.objects.get(post=post, user=user)
-                post.joined = True
-            except PostTag.DoesNotExist:
-                post.joined = False
-
         # Support filtering posts by tag
-        tag = self.request.query_params.get('tag_id', None)
-        if tag is not None:
-            posts = posts.filter(tag__id=tag)
+        # tag = self.request.query_params.get('tag_id', None)
+        # if tag is not None:
+        #     posts = posts.filter(tag__id=tag)
 
-        serializer = postSerializer(
+        serializer = PostSerializer(
             posts, many=True, context={'request': request})
         return Response(serializer.data)
-
-
-class PostUserSerializer(serializers.ModelSerializer):
-    """JSON serializer for post creators's related Django user"""
-    class Meta:
-        model = User
-        fields = ['first_name', 'last_name', 'email']
-
-
-class PostTagSerializer(serializers.ModelSerializer):
-    """JSON serializer for tag on post"""
-    user = PostUserSerializer(many=False)
-
-    class Meta:
-        model = User
-        fields = ['user']
 
 class TagSerializer(serializers.ModelSerializer):
     """JSON serializer for tags"""
@@ -150,9 +120,6 @@ class TagSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     """JSON serializer for posts"""
-    user = PostUserSerializer(many=False)
-    tag = TagSerializer(many=False)
-
     class Meta:
         model = Post
         fields = ('id', 'title', 'content', 'post_time', 'image_url', 'approved', 'deleted', 'author_id', 'category_id')

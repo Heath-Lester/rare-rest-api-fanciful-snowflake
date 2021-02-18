@@ -1,0 +1,18 @@
+[
+    {
+        "model": "rareapi.category",
+        "pk": 1,
+        "fields": {
+            "category": "News",
+            "deleted": false
+        }
+    },
+    {
+        "model": "rareapi.category",
+        "pk": 2,
+        "fields": {
+            "category": "Trending",
+            "deleted": false
+        }
+    }
+]

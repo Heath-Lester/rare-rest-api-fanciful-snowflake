@@ -1,0 +1,12 @@
+[
+    {
+        "model": "rareapi.comment",
+        "pk": 1,
+        "fields": {
+            "author_id": 1,
+            "subject": "This is wrong",
+            "comment": "Everything you created was wrong",
+            "deleted": false
+        }
+    }
+]

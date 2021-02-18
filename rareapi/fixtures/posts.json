@@ -1,0 +1,18 @@
+[
+    {
+        "model": "rareapi.post",
+        "pk": 1,
+        "fields": {
+            "author_id": 1,
+            "category_id": 1,
+            "title": "News Story",
+            "content": "Check out this news story or something",
+            "post_time": "2020-08-28T14:51:39.989Z",
+            "header_url": "insert url here",
+            "approved": true,
+            "deleted": false
+        
+
+        }
+    }
+]

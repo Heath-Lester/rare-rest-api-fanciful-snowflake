@@ -67,4 +67,4 @@ class CategorySerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Category
-		fields = ['label', 'deleted']
+		fields = ['id', 'label', 'deleted']

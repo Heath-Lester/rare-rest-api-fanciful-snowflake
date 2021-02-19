@@ -8,5 +8,5 @@
             "database": "db.sqlite3"
         }
     ],
-    "python.pythonPath": "/home/mcamp/.local/share/virtualenvs/rare-rest-api-fanciful-snowflake-TCRFzwCT/bin/python"
+    "python.pythonPath": "snowflake"
 }

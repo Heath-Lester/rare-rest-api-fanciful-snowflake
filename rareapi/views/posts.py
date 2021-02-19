@@ -112,11 +112,11 @@ class Posts(ViewSet):
             posts, many=True, context={'request': request})
         return Response(serializer.data)
 
-class TagSerializer(serializers.ModelSerializer):
-    """JSON serializer for tags"""
-    class Meta:
-        model = Tag
-        fields = ('id', 'author_id', 'tag')
+# class TagSerializer(serializers.ModelSerializer):
+#     """JSON serializer for tags"""
+#     class Meta:
+#         model = Tag
+#         fields = ('id', 'author_id', 'tag')
 
 class PostSerializer(serializers.ModelSerializer):
     """JSON serializer for posts"""

@@ -24,7 +24,7 @@ class Posts(ViewSet):
         post = Post()
         post.title = request.data["title"]
         post.content = request.data["content"]
-        post.post_time = request.data["post_time"]
+        post.publication_date = request.data["publication_date"]
         post.image_url = request.data["image_url"]
         post.approved = request.data["approved"]
         post.deleted = request.data["deleted"]
@@ -63,7 +63,7 @@ class Posts(ViewSet):
         post = Post()
         post.title = request.data["title"]
         post.content = request.data["content"]
-        post.post_time = request.data["post_time"]
+        post.publication_date = request.data["publication_date"]
         post.image_url = request.data["image_url"]
         post.approved = request.data["approved"]
         post.deleted = request.data["deleted"]
@@ -122,5 +122,5 @@ class PostSerializer(serializers.ModelSerializer):
     """JSON serializer for posts"""
     class Meta:
         model = Post
-        fields = ('id', 'title', 'content', 'post_time', 'image_url', 'approved', 'deleted', 'author', 'category')
+        fields = ('id', 'title', 'content', 'publication_date', 'image_url', 'approved', 'deleted', 'author', 'category')
         depth = 2

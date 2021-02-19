@@ -122,4 +122,9 @@ class PostSerializer(serializers.ModelSerializer):
     """JSON serializer for posts"""
     class Meta:
         model = Post
+<<<<<<< HEAD
         fields = ('id', 'title', 'content', 'publication_date', 'image_url', 'approved', 'deleted', 'author_id', 'category_id')
+=======
+        fields = ('id', 'title', 'content', 'post_time', 'image_url', 'approved', 'deleted', 'author', 'category')
+        depth = 2
+>>>>>>> main

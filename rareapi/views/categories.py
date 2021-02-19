@@ -30,21 +30,21 @@ class Categories(ViewSet):
 	def create(self, request):
 
 		category = Category()
-		category.label = request['label']
+		category.category = request.data['category']
 		category.deleted = False
 
 		try:
 			category.save()
 			serializer = CategorySerializer(category, context={'request', request})
 			return Response(serializer.data)
-		except ValidationError as er:
+		except ValidationError as ex:
 			return Response({"reason": ex.message}, status=status.HTTP_400_BAD_REQUEST)
 
 	def update(self, request, pk=None):
 
 		category = Category.objects.get(pk=pk)
-		category.label = request['label']
-		category.deleted = request['deleted']
+		category.category = request.data['category']
+		category.deleted = request.data['deleted']
 
 		category.save()
 

@@ -28,21 +28,20 @@ class Comments(ViewSet):
 		except Exception as ex:
 			return HttpResponseServerError(ex)
 
-
 	def create(self, request):
 
 		user = Token.objects.get(user=request.auth.user)
 
 		comment = Comment()
 		comment.author = user
-		comment.subject = request['subject']
-		comment.comment = request['comment']
+		comment.subject = request.data['subject']
+		comment.comment = request.data['comment']
 		comment.deleted = False
 
 		try:
 			comment.save()
 			serializer = CommentSerializer(comment, context={'request', request})
-			Response(serializer.data)
+			return Response(serializer.data)
 		except ValidationError as ex:
 			return Response({"reason": ex.message}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -52,9 +51,9 @@ class Comments(ViewSet):
 
 		comment = Comment.objects.get(pk=pk)
 		comment.author = user
-		comment.subject = request['subject']
-		comment.comment = request['comment']
-		comment.deleted = request['deleted']
+		comment.subject = request.data['subject']
+		comment.comment = request.data['comment']
+		comment.deleted = request.data['deleted']
 
 		comment.save()
 

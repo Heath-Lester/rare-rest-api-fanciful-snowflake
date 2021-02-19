@@ -8,7 +8,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from rareapi.models import Post, Category
+from rareapi.models import Post, Category, Tag
 
 
 

@@ -56,12 +56,9 @@ class Comments(ViewSet):
 		comment.comment = request['comment']
 		comment.deleted = request['deleted']
 
-		try:
-			comment.save()
-			serializer = CommentSerializer(comment, context={'request', request})
-			Response(serializer.data)
-		except ValidationError as ex:
-			return Response({"reason": ex.message}, status=status.HTTP_400_BAD_REQUEST)
+		comment.save()
+
+		return Response({}, status=status.HTTP_204_NO_CONTENT)
 
 class CommentSerializer(serializers.ModelSerializer):
 	class Meta:

@@ -8,7 +8,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from rareapi.models import Post, Category
+from rareapi.models import Post, Category, Tag
 
 
 
@@ -122,4 +122,5 @@ class PostSerializer(serializers.ModelSerializer):
     """JSON serializer for posts"""
     class Meta:
         model = Post
-        fields = ('id', 'title', 'content', 'post_time', 'image_url', 'approved', 'deleted', 'author_id', 'category_id')
+        fields = ('id', 'title', 'content', 'post_time', 'image_url', 'approved', 'deleted', 'author', 'category')
+        depth = 2

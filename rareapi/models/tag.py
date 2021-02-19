@@ -1,6 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 
 class Tag(models.Model):
-    author = models.OneToOneField(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(Token, on_delete=models.CASCADE)
     tag = models.CharField(max_length=25)

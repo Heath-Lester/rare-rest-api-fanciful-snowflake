@@ -1,8 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 
 class Post(models.Model):
-    author= models.OneToOneField(User, on_delete=models.CASCADE)
+    author= models.ForeignKey(Token, on_delete=models.CASCADE)
     category= models.ForeignKey("category", on_delete=models.CASCADE)
     title= models.CharField(max_length=15)
     content= models.CharField(max_length=250)

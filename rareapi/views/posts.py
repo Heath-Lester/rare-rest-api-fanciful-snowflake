@@ -55,7 +55,7 @@ class Posts(ViewSet):
             return HttpResponseServerError(ex)
 
     def update(self, request, pk=None):
-        """Handle PUT requests for an post
+        """Handle PUT requests for a post
 
         Returns:
             Response -- Empty body with 204 status code

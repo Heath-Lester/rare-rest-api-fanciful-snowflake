@@ -1,0 +1,10 @@
+[
+    {
+        "model": "rareapi.tag",
+        "pk": 1,
+        "fields": {
+            "author_id": 1,
+            "tag": "News"
+        }
+    }
+]

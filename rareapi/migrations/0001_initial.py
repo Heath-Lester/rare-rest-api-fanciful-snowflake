@@ -55,10 +55,10 @@ class Migration(migrations.Migration):
             name='Comment',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('subject', models.CharField(max_length=25)),
-                ('comment', models.CharField(max_length=250)),
-                ('deleted', models.BooleanField()),
+                ('content', models.CharField(max_length=250)),
+                ('created_on', models.DateTimeField()),
                 ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='authtoken.token')),
+                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rareapi.post')),
             ],
         ),
     ]

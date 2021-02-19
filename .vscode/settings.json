@@ -7,10 +7,5 @@
             "name": "Rare db",
             "database": "db.sqlite3"
         }
-<<<<<<< HEAD
-    ],
-    "python.pythonPath": "snowflake"
-=======
     ]
->>>>>>> main
 }

@@ -16,14 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
-<<<<<<< HEAD
-from rareapi.views import register_user, login_user, Posts
-=======
-from rareapi.views import register_user, login_user, Comments, Categories
->>>>>>> main
+from rareapi.views import register_user, login_user, Posts, Comments, Categories
 from rest_framework import routers
 
 router = routers.DefaultRouter(trailing_slash=False)
+router.register(r'posts', Posts, 'post')
 router.register(r'comments', Comments, 'comment')
 router.register(r'categories', Categories, 'category')
 

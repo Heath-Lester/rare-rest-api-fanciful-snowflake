@@ -3,7 +3,7 @@
         "model": "rareapi.category",
         "pk": 1,
         "fields": {
-            "category": "News",
+            "label": "News",
             "deleted": false
         }
     },
@@ -11,7 +11,7 @@
         "model": "rareapi.category",
         "pk": 2,
         "fields": {
-            "category": "Trending",
+            "label": "Trending",
             "deleted": false
         }
     }

@@ -20,7 +20,7 @@ class Tags(ViewSet):
         """
 
         tag = Tag()
-        tag.tag = request.data["tag"]
+        tag.label = request.data["label"]
         token = Token.objects.get(user = request.auth.user)
         tag.author_id = token
 
@@ -51,7 +51,7 @@ class Tags(ViewSet):
             Response -- Empty body with 204 status code
         """
         tag = Tag()
-        tag.tag = request.data["tag"]
+        tag.label = request.data["label"]
         token = Token.objects.get(user = request.auth.user)
         tag.author_id = token
 
@@ -92,4 +92,4 @@ class TagSerializer(serializers.ModelSerializer):
     """JSON serializer for tags"""
     class Meta:
         model = Tag
-        fields = ('id', 'author_id', 'tag')
+        fields = ('id', 'author_id', 'label')

@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name='Category',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('category', models.CharField(max_length=25)),
+                ('label', models.CharField(max_length=25)),
                 ('deleted', models.BooleanField()),
             ],
         ),
@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
             name='Tag',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('tag', models.CharField(max_length=25)),
+                ('label', models.CharField(max_length=25)),
                 ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='authtoken.token')),
             ],
         ),

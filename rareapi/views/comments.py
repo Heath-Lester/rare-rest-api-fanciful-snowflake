@@ -7,7 +7,8 @@ from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from rareapi.models import Comment
+from rareapi.models import Comment, Post
+from datetime import datetime
 
 class Comments(ViewSet):
 
@@ -31,13 +32,13 @@ class Comments(ViewSet):
 	def create(self, request):
 
 		user = Token.objects.get(user=request.auth.user)
+		post = Post.objects.get(pk = request.data['post_id'])
 
 		comment = Comment()
 		comment.author = user
-		comment.subject = request.data['subject']
-		comment.comment = request.data['comment']
-		comment.deleted = False
-
+		comment.post = post
+		comment.content = request.data['content']
+		comment.created_on = datetime.now()
 		try:
 			comment.save()
 			serializer = CommentSerializer(comment, context={'request', request})
@@ -51,9 +52,9 @@ class Comments(ViewSet):
 
 		comment = Comment.objects.get(pk=pk)
 		comment.author = user
-		comment.subject = request.data['subject']
-		comment.comment = request.data['comment']
-		comment.deleted = request.data['deleted']
+		comment.post = request.data['post_id']
+		comment.content = request.data['content']
+		comment.created_on = request.data['created_on']
 
 		comment.save()
 
@@ -62,4 +63,5 @@ class Comments(ViewSet):
 class CommentSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Comment
-		fields = ['author_id', 'subject', 'comment', 'deleted']
+		fields = ['id','author', 'post', 'content', 'created_on']
+		depth = 1

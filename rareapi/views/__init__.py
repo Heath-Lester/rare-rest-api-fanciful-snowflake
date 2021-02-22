@@ -4,4 +4,3 @@ from .posts import Posts
 from .tags import Tags
 from .comments import Comments
 from .categories import Categories
-from .posttag import PostTags

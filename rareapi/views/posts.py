@@ -9,10 +9,13 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from rareapi.models import Post, Category, Tag
+from rest_framework.response import Response
+from rareapi.models import Post, Category, Tag, PostTag
 
 class Posts(ViewSet):
-
+    
+    # Likely becomes the most complicated function in the app
+    # Has to include categories, tags  
     def create(self, request):
         """Handle POST operations for posts
 
@@ -59,6 +62,7 @@ class Posts(ViewSet):
             """
             matchingtags = Tag.objects.filter(tagging__post=post)
             print(matchingtags.query)
+            post.tags = matchingtags
             serializer = PostSerializer(post, context={'request': request})
             return Response(serializer.data)
         except Exception as ex:
@@ -118,9 +122,44 @@ class Posts(ViewSet):
         # if tag is not None:
         #     posts = posts.filter(tag__id=tag)
 
-        serializer = PostSerializer(
+        serializer = PostListSerializer(
             posts, many=True, context={'request': request})
         return Response(serializer.data)
+
+    @action(methods=['post'], detail=True)
+    def modifyTags(self, request, pk=None):
+        """Managing tags posting onto posts"""
+
+        # A user wants add a tag to a post
+        if request.method == "POST":
+            # The pk would be `2` if the URL above was requested
+            post = Post.objects.get(pk=pk)
+
+            # Django uses the `Authorization` header to determine
+            # which user is making the request to sign up
+            tag = Tag.objects.get(user=request.auth.user)
+
+            try:
+                # Determine if the user is already signed up
+                appending = PostTag.objects.get(
+                    post=post, tag=tag)
+                return Response(
+                    {'message': 'tag already signed up this post.'},
+                    status=status.HTTP_422_UNPROCESSABLE_ENTITY
+                )
+            except PostTag.DoesNotExist:
+                # The user is not signed up.
+                appending = PostTag()
+                appending.post = post
+                appending.tag = tag
+                appending.save()
+
+                return Response({}, status=status.HTTP_201_CREATED)
+
+        # If the client performs a request with a method of
+        # anything other than POST or DELETE, tell client that
+        # the method is not supported
+        return Response({}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 class TagSerializer(serializers.ModelSerializer):
     """JSON serializer for tags"""
@@ -129,8 +168,21 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ('id', 'label')
 
 class PostSerializer(serializers.ModelSerializer):
-    """JSON serializer for posts"""
+    """JSON serializer for posts
+    
+    Incorporates tags into a single unique post in Post Detail.
+    """
+    tags = TagSerializer(many=True)
+
     class Meta:
         model = Post
-        fields = ('id', 'title', 'content', 'publication_date', 'image_url', 'approved', 'deleted', 'author', 'category', 'label')
+        fields = ('id', 'title', 'content', 'publication_date', 'image_url', 'approved', 'deleted', 'author', 'category', 'tags')
+        depth = 2
+
+class PostListSerializer(serializers.ModelSerializer):
+    """JSON serializer for posts"""
+
+    class Meta:
+        model = Post
+        fields = ('id', 'title', 'content', 'publication_date', 'image_url', 'approved', 'deleted', 'author', 'category')
         depth = 2

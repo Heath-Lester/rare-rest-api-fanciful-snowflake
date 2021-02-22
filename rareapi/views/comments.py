@@ -49,10 +49,11 @@ class Comments(ViewSet):
 	def update(self, request, pk=None):
 
 		user = Token.objects.get(user=request.auth.user)
+		post = Post.objects.get(pk=request.data['post_id'])
 
 		comment = Comment.objects.get(pk=pk)
 		comment.author = user
-		comment.post = request.data['post_id']
+		comment.post = post
 		comment.content = request.data['content']
 		comment.created_on = request.data['created_on']
 

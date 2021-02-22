@@ -140,11 +140,11 @@ class Posts(ViewSet):
             tag = Tag.objects.get(user=request.auth.user)
 
             try:
-                # Determine if the user is already signed up
+                # Determine if the tag is already signed up
                 appending = PostTag.objects.get(
                     post=post, tag=tag)
                 return Response(
-                    {'message': 'tag already signed up this post.'},
+                    {'message': 'Tag already up in this post.'},
                     status=status.HTTP_422_UNPROCESSABLE_ENTITY
                 )
             except PostTag.DoesNotExist:

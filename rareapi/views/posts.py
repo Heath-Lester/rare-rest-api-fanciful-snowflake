@@ -1,4 +1,5 @@
 """View module for handling requests about events"""
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseServerError
@@ -9,8 +10,7 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rareapi.models import Post, Category, Tag
-
-
+from datetime import datetime
 
 class Posts(ViewSet):
 
@@ -24,7 +24,7 @@ class Posts(ViewSet):
         post = Post()
         post.title = request.data["title"]
         post.content = request.data["content"]
-        post.publication_date = request.data["publication_date"]
+        post.publication_date = datetime.now()
         post.image_url = request.data["image_url"]
         post.approved = request.data["approved"]
         post.deleted = request.data["deleted"]

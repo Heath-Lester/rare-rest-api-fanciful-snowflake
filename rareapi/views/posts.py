@@ -48,6 +48,17 @@ class Posts(ViewSet):
         """
         try:
             post = Post.objects.get(pk=pk)
+            """ 
+            Select * 
+            From Tag t
+            Join PostTags pt
+            On t.id = pt.tag_id
+            Join Post p
+            On p.id = pt.post_id
+            Where p.id = ?
+            """
+            matchingtags = Tag.objects.filter(tagging__post=post)
+            print(matchingtags.query)
             serializer = PostSerializer(post, context={'request': request})
             return Response(serializer.data)
         except Exception as ex:
@@ -121,5 +132,5 @@ class PostSerializer(serializers.ModelSerializer):
     """JSON serializer for posts"""
     class Meta:
         model = Post
-        fields = ('id', 'title', 'content', 'publication_date', 'image_url', 'approved', 'deleted', 'author', 'category')
+        fields = ('id', 'title', 'content', 'publication_date', 'image_url', 'approved', 'deleted', 'author', 'category', 'label')
         depth = 2

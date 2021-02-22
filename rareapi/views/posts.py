@@ -59,10 +59,10 @@ class Posts(ViewSet):
         Returns:
             Response -- Empty body with 204 status code
         """
-        post = Post()
+        post = Post.objects.get(pk=pk)
         post.title = request.data["title"]
         post.content = request.data["content"]
-        post.publication_date = request.data["publication_date"]
+        post.publication_date = datetime.now()
         post.image_url = request.data["image_url"]
         post.approved = request.data["approved"]
         post.deleted = request.data["deleted"]

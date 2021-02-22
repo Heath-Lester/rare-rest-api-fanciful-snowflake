@@ -16,9 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
-from rareapi.views import register_user, login_user, Comments, Categories, Posts, Tags
+from rareapi.views import register_user, login_user, Comments, Categories, Posts, Tags, PostTags
 from rest_framework import routers
-from rareapi.views import Posts
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'posts', Posts, 'post')
@@ -26,6 +25,7 @@ router.register(r'comments', Comments, 'comment')
 router.register(r'categories', Categories, 'category')
 router.register(r'posts', Posts, 'post')
 router.register(r'tags', Tags, 'tag')
+router.register(r'posttags', PostTags, 'posttag')
 
 urlpatterns = [
     path('', include(router.urls)),

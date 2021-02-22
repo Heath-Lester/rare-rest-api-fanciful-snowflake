@@ -23,8 +23,8 @@ class PostTags(ViewSet):
         """
 
         postTag = PostTag()
-        post = Post.objects.get(pk=request.data["postId"])
-        tag = Tag.objects.get(pk=request.data["tagId"])
+        post = Post.objects.get(pk=request.data["post_id"])
+        tag = Tag.objects.get(pk=request.data["tag_id"])
 
         postTag.post = post
         postTag.tag = tag
@@ -36,31 +36,18 @@ class PostTags(ViewSet):
         except ValidationError as ex:
             return Response({"reason": ex.message}, status=status.HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, request, pk=None):
-        """Handle GET requests for single tag
+    # def retrieve(self, request, pk=None):
+    #     """Handle GET requests for single tag
 
-        Returns:
-            Response -- JSON serialized tag instance
-        """
-        try:
-            tag = Tag.objects.get(pk=pk)
-            serializer = TagSerializer(tag, context={'request': request})
-            return Response(serializer.data)
-        except Exception as ex:
-            return HttpResponseServerError(ex)
-
-    def update(self, request, pk=None):
-        """Handle PUT requests for a tag
-
-        Returns:
-            Response -- Empty body with 204 status code
-        """
-        tag = Tag()
-        tag.label = request.data["label"]
-        token = Token.objects.get(user = request.auth.user)
-        tag.author_id = token
-
-        return Response({}, status=status.HTTP_204_NO_CONTENT)
+    #     Returns:
+    #         Response -- JSON serialized tag instance
+    #     """
+    #     try:
+    #         postTag = PostTag.objects.get(pk=pk)
+    #         serializer = PostTagSerializer(postTag, context={'request': request})
+    #         return Response(serializer.data)
+    #     except Exception as ex:
+    #         return HttpResponseServerError(ex)
 
     def destroy(self, request, pk=None):
         """Handle DELETE requests for a single postTag
@@ -74,7 +61,7 @@ class PostTags(ViewSet):
 
             return Response({}, status=status.HTTP_204_NO_CONTENT)
 
-        except Tag.DoesNotExist as ex:
+        except PostTag.DoesNotExist as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
         except Exception as ex:
@@ -86,15 +73,30 @@ class PostTags(ViewSet):
         Returns:
             Response -- JSON serialized list of tags
         """
-        # Get the current authenticated user
-        tags = Tag.objects.all()
+        postTags = PostTag.objects.all()
 
-        serializer = TagSerializer(
-            tags, many=True, context={'request': request})
+        # Filter postTags by post.
+        post = self.request.query_params.get("post_id", None)
+
+        if post is not None:
+            postTags = postTags.filter(post_id=post)
+
+        serializer = PostTagSerializer(
+            postTags, many=True, context={'request': request})
         return Response(serializer.data)
 
-class TagSerializer(serializers.ModelSerializer):
+class TagSerializer(serializers.HyperlinkedModelSerializer):
     """JSON serializer for tags"""
     class Meta:
         model = Tag
-        fields = ('id', 'author_id', 'label')
+        fields = ('id', 'label')
+
+class PostTagSerializer(serializers.ModelSerializer):
+    """JSON serializer for tags"""
+
+    tag = TagSerializer(many=False)
+
+    class Meta:
+        model = PostTag
+        fields = ('id', 'post_id', 'tag_id', 'tag')
+        depth = 1

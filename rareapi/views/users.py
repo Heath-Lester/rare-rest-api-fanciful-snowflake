@@ -30,7 +30,7 @@ class Users(ViewSet):
             Response -- JSON serialized list of users
         """
         # Get the current authenticated user
-        users = User.objects.all()
+        users = User.objects.all().order_by('username')
 
         serializer = UserSerializer(
             users, many=True, context={'request': request})

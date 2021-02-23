@@ -1,5 +1,6 @@
 """View module for handling requests about events"""
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseServerError
 from rest_framework import status
@@ -17,7 +18,7 @@ class Users(ViewSet):
             Response -- JSON serialized user instance
         """
         try:
-            user = User.objects.get(pk=pk)
+            user = User.objects.get(auth_token=pk)
             serializer = UserSerializer(user, context={'request': request})
             return Response(serializer.data)
         except Exception as ex:
@@ -36,8 +37,38 @@ class Users(ViewSet):
             users, many=True, context={'request': request})
         return Response(serializer.data)
 
+    @action(detail=True, methods=['post'])
+    def deactivate(self, request, pk=None):
+        try:
+            user = User.objects.get(auth_token=pk)
+        except User.DoesNotExist as ex:
+            return Response({'message': "don't tell me such sweet lies"}, status=status.HTTP_404_NOT_FOUND)
+
+        if(user.is_active):
+            user.is_active = False
+            user.save()
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'message': "User is already deactivated"}, status=status.HTTP_409_CONFLICT)
+    
+    @action(detail=True, methods=['post'])
+    def activate(self, request, pk=None):
+        try:
+            user = User.objects.get(auth_token=pk)
+        except User.DoesNotExist as ex:
+            return Response({'message': "don't tell me such sweet lies"}, status=status.HTTP_404_NOT_FOUND)
+
+        if(not user.is_active):
+            user.is_active = True
+            user.save()
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'message': "User is already activated"}, status=status.HTTP_409_CONFLICT)
+
+
+
 class UserSerializer(serializers.ModelSerializer):
     """JSON serializer for users"""
     class Meta:
         model = User
-        fields = ('id', 'is_staff', 'first_name', 'last_name', 'username')
+        fields = ('id', 'is_staff', 'first_name', 'last_name', 'username', 'auth_token')

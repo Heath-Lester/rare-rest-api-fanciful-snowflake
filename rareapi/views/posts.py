@@ -137,7 +137,7 @@ class Posts(ViewSet):
 
             # Django uses the `Authorization` header to determine
             # which user is making the request to sign up
-            tag = Tag.objects.get(user=request.auth.user)
+            tag = Tag.objects.get(id=request.data["tag_id"])
 
             try:
                 # Determine if the tag is already signed up

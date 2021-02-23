@@ -126,7 +126,7 @@ class Posts(ViewSet):
             posts, many=True, context={'request': request})
         return Response(serializer.data)
 
-    @action(methods=['post'], detail=True)
+    @action(methods=['post', 'delete'], detail=True)
     def modifyTags(self, request, pk=None):
         """Managing tags posting onto posts"""
 
@@ -156,6 +156,31 @@ class Posts(ViewSet):
 
                 return Response({}, status=status.HTTP_201_CREATED)
 
+        # User wants to leave a previously joined event
+        elif request.method == "DELETE":
+            # Handle the case if the client specifies a game
+            # that doesn't exist
+            try:
+                post = Post.objects.get(pk=pk)
+                tag = self.request.query_params.get('tagId', None)
+            except Post.DoesNotExist:
+                return Response(
+                    {'message': 'Event does not exist.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            try:
+                # Try to delete the signup
+                appending = PostTag.objects.get(
+                    post=post, tag=tag)
+                appending.delete()
+                return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+            except PostTag.DoesNotExist:
+                return Response(
+                    {'message': 'Not currently registered for event.'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
         # If the client performs a request with a method of
         # anything other than POST or DELETE, tell client that
         # the method is not supported

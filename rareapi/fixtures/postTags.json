@@ -3,8 +3,8 @@
         "model": "rareapi.posttag",
         "pk": 1,
         "fields": {
-            "post_id": 1,
-            "tag_id": 1
+            "post": 1,
+            "tag": 1
         }
     }
 ]

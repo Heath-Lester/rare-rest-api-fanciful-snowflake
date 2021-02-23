@@ -10,3 +10,13 @@ class Post(models.Model):
     image_url= models.CharField(max_length=50)
     approved= models.BooleanField()
     deleted= models.BooleanField()
+
+
+    # Custom Property for tags and helping with M to M table.
+    @property
+    def tags(self):
+            return self.__tags
+
+    @tags.setter
+    def tags(self, value):
+            self.__tags = value    

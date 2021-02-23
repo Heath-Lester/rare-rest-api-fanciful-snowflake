@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rareapi.post')),
-                ('tag', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rareapi.tag')),
+                ('tag', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tagging', to='rareapi.tag')),
             ],
         ),
         migrations.CreateModel(

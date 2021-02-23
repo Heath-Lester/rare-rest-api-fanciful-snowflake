@@ -19,7 +19,6 @@ from django.conf.urls import include
 from django.contrib.auth.models import User
 from rareapi.views import register_user, login_user, Comments, Categories, Posts, Tags, Users
 from rest_framework import routers
-from rareapi.views import Posts
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'posts', Posts, 'post')

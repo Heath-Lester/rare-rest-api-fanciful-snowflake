@@ -50,10 +50,11 @@ class Tags(ViewSet):
         Returns:
             Response -- Empty body with 204 status code
         """
-        tag = Tag()
+        tag = Tag.objects.get(pk=pk)
         tag.label = request.data["label"]
         token = Token.objects.get(user = request.auth.user)
         tag.author_id = token
+        tag.save()
 
         return Response({}, status=status.HTTP_204_NO_CONTENT)
 

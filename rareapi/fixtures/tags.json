@@ -6,5 +6,13 @@
             "author_id": "fa2eba9be8282d595c997ee5cd49f2ed31f65bed",
             "label": "News"
         }
+    },
+    {    
+        "model": "rareapir.tag",
+        "pk": 2,
+        "fields": {
+            "author_id": "fa2eba9be8282d595c997ee5cd49f2ed31f65bed",
+            "label": "Software"
+        }
     }
 ]

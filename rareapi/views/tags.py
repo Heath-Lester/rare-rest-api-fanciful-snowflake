@@ -93,4 +93,4 @@ class TagSerializer(serializers.ModelSerializer):
     """JSON serializer for tags"""
     class Meta:
         model = Tag
-        fields = ('id', 'author_id', 'label')
+        fields = ('id', 'author', 'label')

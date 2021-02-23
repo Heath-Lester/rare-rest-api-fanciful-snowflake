@@ -38,7 +38,7 @@ class Posts(ViewSet):
 
         try:
             post.save()
-            serializer = PostSerializer(post, context={'request': request})
+            serializer = PostListSerializer(post, context={'request': request})
             return Response(serializer.data)
         except ValidationError as ex:
             return Response({"reason": ex.message}, status=status.HTTP_400_BAD_REQUEST)
@@ -81,12 +81,24 @@ class Posts(ViewSet):
         post.image_url = request.data["image_url"]
         post.approved = request.data["approved"]
         post.deleted = request.data["deleted"]
-        token = Token.objects.get(user = request.auth.user)
-        post.author_id = token
+        # token = Token.objects.get(user = request.auth.user)
+        post.author = post.author
 
         category = Category.objects.get(pk=request.data["category_id"])
         post.category = category
         post.save()
+
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+    def partial_update(self, request, pk=None):
+        post = Post.objects.get(pk=pk)
+
+        for key in request.data:
+            setattr(post, key, request.data[key])
+
+        post.save()
+
+        
 
         return Response({}, status=status.HTTP_204_NO_CONTENT)
 
@@ -126,6 +138,7 @@ class Posts(ViewSet):
             posts, many=True, context={'request': request})
         return Response(serializer.data)
 
+    
     @action(methods=['post'], detail=True)
     def modifyTags(self, request, pk=None):
         """Managing tags posting onto posts"""

@@ -38,7 +38,7 @@ class Posts(ViewSet):
 
         try:
             post.save()
-            serializer = PostSerializer(post, context={'request': request})
+            serializer = PostListSerializer(post, context={'request': request})
             return Response(serializer.data)
         except ValidationError as ex:
             return Response({"reason": ex.message}, status=status.HTTP_400_BAD_REQUEST)

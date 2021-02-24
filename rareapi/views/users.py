@@ -66,6 +66,33 @@ class Users(ViewSet):
             return Response({'message': "User is already activated"}, status=status.HTTP_409_CONFLICT)
 
 
+    @action(detail=True, methods=['post'])
+    def deadminUser(self, request, pk=None):
+        try:
+            user = User.objects.get(auth_token=pk)
+        except User.DoesNotExist as ex:
+            return Response({'message': "Why you gotta do me like that?"}, status=status.HTTP_404_NOT_FOUND)
+
+        if(user.is_staff):
+            user.is_staff = False
+            user.save()
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'message': "User is already deadmin"}, status=status.HTTP_409_CONFLICT)
+    
+    @action(detail=True, methods=['post'])
+    def adminUser(self, request, pk=None):
+        try:
+            user = User.objects.get(auth_token=pk)
+        except User.DoesNotExist as ex:
+            return Response({'message': "Why you gotta do me like that?"}, status=status.HTTP_404_NOT_FOUND)
+
+        if(not user.is_staff):
+            user.is_staff = True
+            user.save()
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'message': "User is already admin"}, status=status.HTTP_409_CONFLICT)
 
 class UserSerializer(serializers.ModelSerializer):
     """JSON serializer for users"""

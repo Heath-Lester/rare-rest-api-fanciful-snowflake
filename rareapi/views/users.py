@@ -58,7 +58,7 @@ class Users(ViewSet):
                 subscription.follower = follower
                 subscription.author = author
                 subscription.created_on = datetime.now()
-                subscription.ended_on = NullBooleanField
+                subscription.ended = False
                 subscription.save()
 
                 return Response({}, status=status.HTTP_201_CREATED)

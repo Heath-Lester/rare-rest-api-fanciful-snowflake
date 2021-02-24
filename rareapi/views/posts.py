@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rareapi.models import Post, Category, Tag, PostTag
+from rareapi.models import Post, Category, Tag, PostTag, Subscription
 
 class Posts(ViewSet):
 
@@ -129,11 +129,22 @@ class Posts(ViewSet):
         """
         # Get the current authenticated user
         posts = Post.objects.all()
+        user = Token.objects.get(user = request.auth.user)
+
+        for post in posts:
+            post.subscribed = None
+
+            try:
+                Subscription.objects.filter(follower=user)
+                post.subscribed = True
+            except Subscription.DoesNotExist:
+                post.subscribed = False
+
 
         # Support filtering posts by tag
-        # tag = self.request.query_params.get('tag_id', None)
-        # if tag is not None:
-        #     posts = posts.filter(tag__id=tag)
+        tag = self.request.query_params.get('tag_id', None)
+        if tag is not None:
+            posts = posts.filter(tag__id=tag)
 
         serializer = PostListSerializer(
             posts, many=True, context={'request': request})
@@ -218,7 +229,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('id', 'title', 'content', 'publication_date', 'image_url', 'approved', 'deleted', 'author', 'category', 'tags')
+        fields = ('id', 'title', 'content', 'publication_date', 'image_url', 'approved', 'deleted', 'author', 'category', 'tags', 'subscribed')
         depth = 2
 
 class PostListSerializer(serializers.ModelSerializer):
@@ -226,5 +237,5 @@ class PostListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('id', 'title', 'content', 'publication_date', 'image_url', 'approved', 'deleted', 'author', 'category')
+        fields = ('id', 'title', 'content', 'publication_date', 'image_url', 'approved', 'deleted', 'author', 'category', 'subscribed')
         depth = 2

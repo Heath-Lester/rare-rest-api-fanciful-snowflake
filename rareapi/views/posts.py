@@ -13,6 +13,8 @@ from rest_framework.response import Response
 from rareapi.models import Post, Category, Tag, PostTag
 
 class Posts(ViewSet):
+
+    
     
     # Likely becomes the most complicated function in the app
     # Has to include categories, tags  
@@ -81,7 +83,6 @@ class Posts(ViewSet):
         post.image_url = request.data["image_url"]
         post.approved = request.data["approved"]
         post.deleted = request.data["deleted"]
-        # token = Token.objects.get(user = request.auth.user)
         post.author = post.author
 
         category = Category.objects.get(pk=request.data["category_id"])
@@ -197,6 +198,10 @@ class Posts(ViewSet):
         # anything other than POST or DELETE, tell client that
         # the method is not supported
         return Response({}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    
+
+
 
 class TagSerializer(serializers.ModelSerializer):
     """JSON serializer for tags"""

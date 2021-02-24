@@ -3,12 +3,16 @@ from django.contrib.auth.models import User
 from django.http.response import HttpResponsePermanentRedirect
 from rest_framework.authtoken.models import Token
 from django.core.exceptions import ValidationError
+from django.db.models.fields import NullBooleanField
 from django.http import HttpResponseServerError
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
+from rareapi.models import Subscription
+from rest_framework.authtoken.models import Token
+from datetime import datetime
 
 class Users(ViewSet):
 
@@ -38,6 +42,28 @@ class Users(ViewSet):
             users, many=True, context={'request': request})
         return Response(serializer.data)
 
+    @action(methods=['post', 'delete'], detail=True)
+    def subscribe(self, request, pk=None):
+        if request.method == "POST":
+
+            follower = Token.objects.get(user = request.auth.user)
+
+            author = Token.objects.get(user = pk)
+
+            try:
+                subscription = Subscription.objects.get(follower=follower, author=author)
+                return Response({'message': 'User already subscribes to this author.'},
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY
+                )
+            except Subscription.DoesNotExist:
+                subscription = Subscription()
+                subscription.follower = follower
+                subscription.author = author
+                subscription.created_on = datetime.now()
+                subscription.ended = False
+                subscription.save()
+
+                return Response({}, status=status.HTTP_201_CREATED)
     @action(detail=True, methods=['post'])
     def deactivate(self, request, pk=None):
         try:
@@ -110,4 +136,4 @@ class UserSerializer(serializers.ModelSerializer):
     """JSON serializer for users"""
     class Meta:
         model = User
-        fields = ('is_staff', 'first_name', 'last_name', 'username', 'auth_token', 'is_active')
+        fields = ('is_staff', 'first_name', 'last_name', 'username', 'auth_token', 'is_active', 'id')

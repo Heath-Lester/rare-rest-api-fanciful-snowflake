@@ -1,5 +1,6 @@
 """View module for handling requests about events"""
 from django.contrib.auth.models import User
+from django.http.response import HttpResponsePermanentRedirect
 from rest_framework.authtoken.models import Token
 from django.core.exceptions import ValidationError
 from django.db.models.fields import NullBooleanField
@@ -100,9 +101,20 @@ class Users(ViewSet):
             return Response({'message': "Why you gotta do me like that?"}, status=status.HTTP_404_NOT_FOUND)
 
         if(user.is_staff):
-            user.is_staff = False
-            user.save()
-            return Response({}, status=status.HTTP_204_NO_CONTENT)
+            # Check for last admin; use a variable that filters through the is_staff field for all users
+            """
+            Select is_staff
+            From users as u
+            Where is_staff = true
+            """
+            admin_list = User.objects.filter(is_staff = 1)
+            # if users.length > 1; Needs to be more than one admin left
+            if len(admin_list) > 1:
+                user.is_staff = False
+                user.save()
+                return Response({}, status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response({'message': "Nope! Last admin."})
         else:
             return Response({'message': "User is already deadmin"}, status=status.HTTP_409_CONFLICT)
     

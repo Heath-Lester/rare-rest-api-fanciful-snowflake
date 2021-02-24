@@ -20,3 +20,10 @@ class Post(models.Model):
     @tags.setter
     def tags(self, value):
             self.__tags = value    
+    @property
+    def subscribed(self):
+            return self.__subscribed
+
+    @subscribed.setter
+    def subscribed(self, value):
+            self.__subscribed = value    

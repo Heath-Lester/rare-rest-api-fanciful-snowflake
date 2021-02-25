@@ -133,9 +133,12 @@ class Posts(ViewSet):
 
         for post in posts:
             post.subscribed = None
+            author = Token.objects.get(key = post.author)
 
             try:
-                Subscription.objects.filter(follower=user)
+                Subscription.objects.get(follower=user, author=author)
+                post.subscribed = True
+            except Subscription.MultipleObjectsReturned:
                 post.subscribed = True
             except Subscription.DoesNotExist:
                 post.subscribed = False
